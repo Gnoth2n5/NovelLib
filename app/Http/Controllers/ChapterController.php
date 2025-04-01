@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Chapter\StoreRequest;
+use App\Http\Requests\Chapter\UpdateRequest;
 use App\Models\Novel;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
@@ -15,11 +17,7 @@ class ChapterController extends Controller
      */
     public function index(Novel $novel)
     {
-        $chapters = $novel->chapters()
-            ->where('is_published', true)
-            ->orderBy('chapter_number')
-            ->paginate(20);
-
+        $chapters = $novel->chapters()->orderBy('order')->paginate(20);
         return view('chapters.index', compact('novel', 'chapters'));
     }
 
@@ -37,28 +35,17 @@ class ChapterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Novel $novel)
+    public function store(StoreRequest $request, Novel $novel)
     {
         Gate::authorize('create', $novel);
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'chapter_number' => 'required|integer|min:1',
-            'is_published' => 'boolean'
-        ]);
+        $data = $request->validated();
+        $data['novel_id'] = $novel->id;
 
-        $chapter = new Chapter();
-        $chapter->novel_id = $novel->id;
-        $chapter->title = $validated['title'];
-        $chapter->slug = Str::slug($validated['title']);
-        $chapter->content = $validated['content'];
-        $chapter->chapter_number = $validated['chapter_number'];
-        $chapter->is_published = $request->boolean('is_published');
-        $chapter->save();
+        $chapter = Chapter::create($data);
 
-        return redirect()->route('chapters.show', [$novel, $chapter])
-            ->with('success', 'Chương đã được tạo thành công!');
+        return redirect()->route('novels.chapters.show', [$novel, $chapter])
+            ->with('success', 'Tạo chương thành công!');
     }
 
     /**
@@ -97,26 +84,14 @@ class ChapterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Novel $novel, Chapter $chapter)
+    public function update(UpdateRequest $request, Novel $novel, Chapter $chapter)
     {
         Gate::authorize('update', $chapter);
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'chapter_number' => 'required|integer|min:1',
-            'is_published' => 'boolean'
-        ]);
+        $chapter->update($request->validated());
 
-        $chapter->title = $validated['title'];
-        $chapter->slug = Str::slug($validated['title']);
-        $chapter->content = $validated['content'];
-        $chapter->chapter_number = $validated['chapter_number'];
-        $chapter->is_published = $request->boolean('is_published');
-        $chapter->save();
-
-        return redirect()->route('chapters.show', [$novel, $chapter])
-            ->with('success', 'Chương đã được cập nhật thành công!');
+        return redirect()->route('novels.chapters.show', [$novel, $chapter])
+            ->with('success', 'Cập nhật chương thành công!');
     }
 
     /**
@@ -128,7 +103,21 @@ class ChapterController extends Controller
 
         $chapter->delete();
 
-        return redirect()->route('chapters.index', $novel)
-            ->with('success', 'Chương đã được xóa thành công!');
+        return redirect()->route('novels.chapters.index', $novel)
+            ->with('success', 'Xóa chương thành công!');
+    }
+
+    public function reorder(Request $request, Novel $novel)
+    {
+        $request->validate([
+            'orders' => 'required|array',
+            'orders.*' => 'required|integer|exists:chapters,id'
+        ]);
+
+        foreach ($request->orders as $order => $id) {
+            Chapter::where('id', $id)->update(['order' => $order + 1]);
+        }
+
+        return response()->json(['message' => 'Cập nhật thứ tự chương thành công!']);
     }
 }

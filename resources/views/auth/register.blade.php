@@ -49,12 +49,7 @@
                             <label for="password" class="label">
                                 <span class="label-text">Mật khẩu</span>
                             </label>
-                            <input type="password" 
-                                   id="password" 
-                                   name="password" 
-                                   class="input input-bordered w-full" 
-                                   required 
-                                   autocomplete="new-password" />
+                            <x-input-password></x-input-password>
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
 
@@ -67,8 +62,7 @@
                                    id="password_confirmation" 
                                    name="password_confirmation" 
                                    class="input input-bordered w-full" 
-                                   required 
-                                   autocomplete="new-password" />
+                                   required />
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                         </div>
 

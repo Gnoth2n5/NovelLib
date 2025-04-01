@@ -18,7 +18,8 @@
                         <label class="label">
                             <span class="label-text">Email</span>
                         </label>
-                        <input type="email" name="email" value="{{ old('email') }}" class="input input-bordered w-full" required autofocus />
+                        <input type="email" name="email" value="{{ old('email') }}"
+                            class="input input-bordered w-full" required autofocus />
                         @error('email')
                             <label class="label">
                                 <span class="label-text-alt text-error">{{ $message }}</span>
@@ -31,7 +32,7 @@
                         <label class="label">
                             <span class="label-text">Mật khẩu</span>
                         </label>
-                        <input type="password" name="password" class="input input-bordered w-full" required />
+                        <x-input-password></x-input-password>
                         @error('password')
                             <label class="label">
                                 <span class="label-text-alt text-error">{{ $message }}</span>
