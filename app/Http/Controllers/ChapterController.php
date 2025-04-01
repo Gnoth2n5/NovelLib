@@ -6,6 +6,7 @@ use App\Models\Novel;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 class ChapterController extends Controller
 {
@@ -27,7 +28,7 @@ class ChapterController extends Controller
      */
     public function create(Novel $novel)
     {
-        $this->authorize('create', [Chapter::class, $novel]);
+        Gate::authorize('create', $novel);
 
         $nextChapterNumber = $novel->chapters()->max('chapter_number') + 1;
         return view('chapters.create', compact('novel', 'nextChapterNumber'));
@@ -38,7 +39,7 @@ class ChapterController extends Controller
      */
     public function store(Request $request, Novel $novel)
     {
-        $this->authorize('create', [Chapter::class, $novel]);
+        Gate::authorize('create', $novel);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -88,7 +89,7 @@ class ChapterController extends Controller
      */
     public function edit(Novel $novel, Chapter $chapter)
     {
-        $this->authorize('update', $chapter);
+        Gate::authorize('update', $chapter);
 
         return view('chapters.edit', compact('novel', 'chapter'));
     }
@@ -98,7 +99,7 @@ class ChapterController extends Controller
      */
     public function update(Request $request, Novel $novel, Chapter $chapter)
     {
-        $this->authorize('update', $chapter);
+        Gate::authorize('update', $chapter);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -123,7 +124,7 @@ class ChapterController extends Controller
      */
     public function destroy(Novel $novel, Chapter $chapter)
     {
-        $this->authorize('delete', $chapter);
+        Gate::authorize('delete', $chapter);
 
         $chapter->delete();
 

@@ -32,6 +32,18 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::with('roles')
+            ->when(request('search'), function ($query) {
+                $query->where('name', 'like', '%' . request('search') . '%')
+                      ->orWhere('email', 'like', '%' . request('search') . '%');
+            })
+            ->when(request('role'), function ($query) {
+                $query->whereHas('roles', function ($q) {
+                    $q->where('name', request('role'));
+                });
+            })
+            ->when(request('is_active'), function ($query) {
+                $query->where('is_active', request('is_active'));
+            })
             ->latest()
             ->paginate(20);
 
@@ -56,6 +68,37 @@ class AdminController extends Controller
         return view('admin.categories.index', compact('categories'));
     }
 
+    public function storeCategory(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:categories',
+            'description' => 'nullable|string'
+        ]);
+
+        Category::create($validated);
+
+        return back()->with('success', 'Thể loại đã được thêm thành công!');
+    }
+
+    public function updateCategory(Request $request, Category $category)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'description' => 'nullable|string'
+        ]);
+
+        $category->update($validated);
+
+        return back()->with('success', 'Thể loại đã được cập nhật thành công!');
+    }
+
+    public function deleteCategory(Category $category)
+    {
+        $category->delete();
+
+        return back()->with('success', 'Thể loại đã được xóa thành công!');
+    }
+
     public function novels()
     {
         $novels = Novel::with(['user', 'categories'])
@@ -65,6 +108,13 @@ class AdminController extends Controller
         return view('admin.novels.index', compact('novels'));
     }
 
+    public function deleteNovel(Novel $novel)
+    {
+        $novel->delete();
+
+        return back()->with('success', 'Truyện đã được xóa thành công!');
+    }
+
     public function comments()
     {
         $comments = Comment::with(['user', 'commentable'])
@@ -72,5 +122,12 @@ class AdminController extends Controller
             ->paginate(20);
 
         return view('admin.comments.index', compact('comments'));
+    }
+
+    public function deleteComment(Comment $comment)
+    {
+        $comment->delete();
+
+        return back()->with('success', 'Bình luận đã được xóa thành công!');
     }
 }

@@ -16,8 +16,18 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Tạo các role
-        $adminRole = Role::create(['name' => 'admin']);
-        $authorRole = Role::create(['name' => 'author']);
+        $adminRole = Role::where('name', 'admin')->first();
+        if (!$adminRole) {
+            $adminRole = Role::create(['name' => 'admin']);
+        }
+        $authorRole = Role::where('name', 'author')->first();
+        if (!$authorRole) {
+            $authorRole = Role::create(['name' => 'author']);
+        }
+        $userRole = Role::where('name', 'user')->first();
+        if (!$userRole) {
+            $userRole = Role::create(['name' => 'user']);
+        }
 
         // Tạo tài khoản admin
         $admin = User::create([
@@ -36,10 +46,12 @@ class UserSeeder extends Seeder
         $author->assignRole($authorRole);
 
         // Tạo tài khoản user thường
-        User::create([
+        $user = User::create([
             'name' => 'User',
             'email' => 'user@example.com',
             'password' => Hash::make('password'),
         ]);
+        $user->assignRole('user');
+
     }
 }

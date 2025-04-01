@@ -7,6 +7,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class NovelController extends Controller
 {
@@ -46,7 +48,7 @@ class NovelController extends Controller
         ]);
 
         $novel = new Novel();
-        $novel->user_id = auth()->id();
+        $novel->user_id = Auth::id();
         $novel->title = $validated['title'];
         $novel->slug = Str::slug($validated['title']);
         $novel->description = $validated['description'];
@@ -81,7 +83,7 @@ class NovelController extends Controller
      */
     public function edit(Novel $novel)
     {
-        $this->authorize('update', $novel);
+        Gate::authorize('update', $novel);
         
         $categories = Category::where('is_active', true)->get();
         return view('novels.edit', compact('novel', 'categories'));
@@ -92,7 +94,7 @@ class NovelController extends Controller
      */
     public function update(Request $request, Novel $novel)
     {
-        $this->authorize('update', $novel);
+        Gate::authorize('update', $novel);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -132,7 +134,7 @@ class NovelController extends Controller
      */
     public function destroy(Novel $novel)
     {
-        $this->authorize('delete', $novel);
+        Gate::authorize('delete', $novel);
 
         // Xóa ảnh bìa nếu có
         if ($novel->cover_image) {
@@ -147,8 +149,9 @@ class NovelController extends Controller
 
     public function follow(Novel $novel)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         
+        /** @var \App\Models\User $user */
         if ($user->followedNovels()->where('novel_id', $novel->id)->exists()) {
             $user->followedNovels()->detach($novel->id);
             $novel->decrement('follows');

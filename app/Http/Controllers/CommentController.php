@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Novel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -26,19 +29,17 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Novel $novel)
     {
         $validated = $request->validate([
-            'content' => 'required|string|max:1000',
-            'commentable_type' => 'required|string|in:App\Models\Novel,App\Models\Chapter',
-            'commentable_id' => 'required|integer'
+            'content' => 'required|string|max:1000'
         ]);
 
         $comment = new Comment();
-        $comment->user_id = auth()->id();
+        $comment->user_id = Auth::id();
         $comment->content = $validated['content'];
-        $comment->commentable_type = $validated['commentable_type'];
-        $comment->commentable_id = $validated['commentable_id'];
+        $comment->commentable_type = Novel::class;
+        $comment->commentable_id = $novel->id;
         $comment->save();
 
         return back()->with('success', 'Bình luận đã được thêm thành công!');
@@ -65,7 +66,7 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        $this->authorize('update', $comment);
+        Gate::authorize('update', $comment);
 
         $validated = $request->validate([
             'content' => 'required|string|max:1000'
@@ -82,7 +83,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        $this->authorize('delete', $comment);
+        Gate::authorize('delete', $comment);
 
         $comment->delete();
 
@@ -91,7 +92,7 @@ class CommentController extends Controller
 
     public function toggleHidden(Comment $comment)
     {
-        $this->authorize('toggleHidden', $comment);
+        Gate::authorize('toggleHidden', $comment);
 
         $comment->is_hidden = !$comment->is_hidden;
         $comment->save();

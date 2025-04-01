@@ -9,6 +9,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 </head>
 <body class="font-sans antialiased">
     <div class="drawer lg:drawer-open">
@@ -36,6 +37,9 @@
                         </label>
                         <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li>
+                                <a href="{{ route('home') }}">Trang chủ</a>
+                            </li>
+                            <li>
                                 <a href="{{ route('profile.edit') }}">Hồ sơ</a>
                             </li>
                             <li>
@@ -57,6 +61,8 @@
 
         <!-- Sidebar -->
         @include('components.admin.sidebar')
+
+        @include('components.message')
     </div>
 </body>
 </html> 

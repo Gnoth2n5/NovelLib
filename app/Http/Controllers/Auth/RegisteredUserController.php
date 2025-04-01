@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -41,10 +42,16 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Gán role "user" cho người dùng mới
+        $userRole = Role::where('name', 'user')->first();
+        if ($userRole) {
+            $user->assignRole($userRole);
+        }
+
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->back()->with('success', 'Đăng ký tài khoản thành công!');
     }
 }

@@ -48,7 +48,7 @@ class Novel extends Model
         return $this->hasMany(Chapter::class);
     }
 
-    public function comments(): MorphMany
+    public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
