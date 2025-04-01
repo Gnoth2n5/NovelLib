@@ -67,8 +67,8 @@ class NovelController extends Controller
      */
     public function show(Novel $novel)
     {
-        $novel->load(['user', 'categories', 'chapters' => function ($query) {
-            $query->orderBy('chapter_number');
+        $novel->load(['author', 'categories', 'chapters' => function ($query) {
+            $query->orderBy('order');
         }]);
 
         return view('novels.show', compact('novel'));
