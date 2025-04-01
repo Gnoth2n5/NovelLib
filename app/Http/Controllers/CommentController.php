@@ -7,6 +7,7 @@ use App\Models\Novel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Chapter;
 
 class CommentController extends Controller
 {
@@ -29,17 +30,20 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Novel $novel)
+    public function store(Request $request, Novel $novel, ?Chapter $chapter = null)
     {
         $validated = $request->validate([
             'content' => 'required|string|max:1000'
         ]);
 
+        // Xác định $commentable là Novel hay Chapter
+        $commentable = $chapter ?? $novel;
+
         $comment = new Comment();
         $comment->user_id = Auth::id();
         $comment->content = $validated['content'];
-        $comment->commentable_type = Novel::class;
-        $comment->commentable_id = $novel->id;
+        $comment->commentable_type = get_class($commentable);
+        $comment->commentable_id = $commentable->id;
         $comment->save();
 
         return back()->with('success', 'Bình luận đã được thêm thành công!');

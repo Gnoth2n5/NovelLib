@@ -19,21 +19,21 @@ Route::get('/dashboard', function () {
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
+
     // Users routes
     Route::get('/users', [AdminController::class, 'users'])->name('users.index');
     Route::post('/users/{user}/toggle-status', [AdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
-    
+
     // Novels routes
     Route::get('/novels', [AdminController::class, 'novels'])->name('novels.index');
     Route::delete('/novels/{novel}', [AdminController::class, 'deleteNovel'])->name('novels.delete');
-    
+
     // Categories routes
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
     Route::post('/categories', [AdminController::class, 'storeCategory'])->name('categories.store');
     Route::put('/categories/{category}', [AdminController::class, 'updateCategory'])->name('categories.update');
     Route::delete('/categories/{category}', [AdminController::class, 'deleteCategory'])->name('categories.delete');
-    
+
     // Comments routes
     Route::get('/comments', [AdminController::class, 'comments'])->name('comments.index');
     Route::delete('/comments/{comment}', [AdminController::class, 'deleteComment'])->name('comments.delete');
@@ -53,7 +53,10 @@ Route::get('/novels/{novel}/chapters/{chapter}', [ChapterController::class, 'sho
 
 // Comment routes
 Route::middleware(['auth'])->group(function () {
+    // web.php
     Route::post('/novels/{novel}/comments', [CommentController::class, 'store'])->name('novels.comments.store');
+    Route::post('/novels/{novel}/chapters/{chapter}/comments', [CommentController::class, 'store'])->name('chapters.comments.store');
+    
     Route::patch('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/toggle-hidden', [CommentController::class, 'toggleHidden'])->name('comments.toggle-hidden');
@@ -71,4 +74,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
