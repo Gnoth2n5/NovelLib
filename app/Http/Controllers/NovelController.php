@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Novel\StoreRequest;
-use App\Http\Requests\Novel\UpdateRequest;
 use App\Models\Novel;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -17,21 +15,12 @@ class NovelController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = Novel::with(['user', 'categories'])->latest();
-
-        if ($request->has('category')) {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('slug', $request->category);
-            });
-        }
-
-        if ($request->has('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
-
-        $novels = $query->paginate(12);
+        $novels = Novel::with(['user', 'categories'])
+            ->where('is_published', true)
+            ->latest()
+            ->paginate(12);
 
         return view('novels.index', compact('novels'));
     }
@@ -41,25 +30,39 @@ class NovelController extends Controller
      */
     public function create()
     {
-        return view('novels.create');
+        $categories = Category::where('is_active', true)->get();
+        return view('novels.create', compact('categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id',
+            'cover_image' => 'nullable|image|max:2048'
+        ]);
+
+        $novel = new Novel();
+        $novel->user_id = Auth::id();
+        $novel->title = $validated['title'];
+        $novel->slug = Str::slug($validated['title']);
+        $novel->description = $validated['description'];
 
         if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')->store('novels', 'public');
+            $path = $request->file('cover_image')->store('novels', 'public');
+            $novel->cover_image = $path;
         }
 
-        $novel = Novel::create($data);
-        $novel->categories()->attach($request->categories);
+        $novel->save();
+        $novel->categories()->attach($validated['categories']);
 
         return redirect()->route('novels.show', $novel)
-            ->with('success', 'Tạo truyện thành công!');
+            ->with('success', 'Truyện đã được tạo thành công!');
     }
 
     /**
@@ -67,8 +70,9 @@ class NovelController extends Controller
      */
     public function show(Novel $novel)
     {
-        $novel->load(['author', 'categories', 'chapters' => function ($query) {
-            $query->orderBy('order');
+        $novel->load(['user', 'categories', 'chapters' => function ($query) {
+            $query->where('is_published', true)
+                ->orderBy('chapter_number');
         }]);
 
         return view('novels.show', compact('novel'));
@@ -79,28 +83,50 @@ class NovelController extends Controller
      */
     public function edit(Novel $novel)
     {
-        return view('novels.edit', compact('novel'));
+        Gate::authorize('update', $novel);
+        
+        $categories = Category::where('is_active', true)->get();
+        return view('novels.edit', compact('novel', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Novel $novel)
+    public function update(Request $request, Novel $novel)
     {
-        $data = $request->validated();
+        Gate::authorize('update', $novel);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id',
+            'cover_image' => 'nullable|image|max:2048',
+            'is_completed' => 'boolean',
+            'is_published' => 'boolean'
+        ]);
+
+        $novel->title = $validated['title'];
+        $novel->slug = Str::slug($validated['title']);
+        $novel->description = $validated['description'];
+        $novel->is_completed = $request->boolean('is_completed');
+        $novel->is_published = $request->boolean('is_published');
 
         if ($request->hasFile('cover_image')) {
+            // Xóa ảnh cũ nếu có
             if ($novel->cover_image) {
                 Storage::disk('public')->delete($novel->cover_image);
             }
-            $data['cover_image'] = $request->file('cover_image')->store('novels', 'public');
+            
+            $path = $request->file('cover_image')->store('novels', 'public');
+            $novel->cover_image = $path;
         }
 
-        $novel->update($data);
-        $novel->categories()->sync($request->categories);
+        $novel->save();
+        $novel->categories()->sync($validated['categories']);
 
         return redirect()->route('novels.show', $novel)
-            ->with('success', 'Cập nhật truyện thành công!');
+            ->with('success', 'Truyện đã được cập nhật thành công!');
     }
 
     /**
@@ -108,6 +134,9 @@ class NovelController extends Controller
      */
     public function destroy(Novel $novel)
     {
+        Gate::authorize('delete', $novel);
+
+        // Xóa ảnh bìa nếu có
         if ($novel->cover_image) {
             Storage::disk('public')->delete($novel->cover_image);
         }
@@ -115,15 +144,7 @@ class NovelController extends Controller
         $novel->delete();
 
         return redirect()->route('novels.index')
-            ->with('success', 'Xóa truyện thành công!');
-    }
-
-    public function like(Novel $novel)
-    {
-        $user = Auth::user();
-        $novel->likes()->toggle($user->id);
-
-        return back();
+            ->with('success', 'Truyện đã được xóa thành công!');
     }
 
     public function follow(Novel $novel)

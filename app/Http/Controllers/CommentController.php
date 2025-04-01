@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Comment\StoreRequest;
 use App\Models\Comment;
 use App\Models\Novel;
 use Illuminate\Http\Request;
@@ -30,14 +29,20 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request, Novel $novel)
     {
-        $data = $request->validated();
-        $data['user_id'] = auth()->id();
+        $validated = $request->validate([
+            'content' => 'required|string|max:1000'
+        ]);
 
-        $comment = Comment::create($data);
+        $comment = new Comment();
+        $comment->user_id = Auth::id();
+        $comment->content = $validated['content'];
+        $comment->commentable_type = Novel::class;
+        $comment->commentable_id = $novel->id;
+        $comment->save();
 
-        return back()->with('success', 'Bình luận thành công!');
+        return back()->with('success', 'Bình luận đã được thêm thành công!');
     }
 
     /**
@@ -78,9 +83,11 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        Gate::authorize('delete', $comment);
+
         $comment->delete();
 
-        return back()->with('success', 'Xóa bình luận thành công!');
+        return back()->with('success', 'Bình luận đã được xóa thành công!');
     }
 
     public function toggleHidden(Comment $comment)

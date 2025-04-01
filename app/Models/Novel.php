@@ -58,5 +58,4 @@ class Novel extends Model
         return $this->belongsToMany(User::class, 'follows')
             ->withTimestamps();
     }
-
 }

@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AuthorRequest\StoreRequest;
-use App\Models\AuthorRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthorRequestController extends Controller
 {
@@ -14,8 +11,7 @@ class AuthorRequestController extends Controller
      */
     public function index()
     {
-        $requests = AuthorRequest::with('user')->latest()->paginate(10);
-        return view('author-requests.index', compact('requests'));
+        //
     }
 
     /**
@@ -23,21 +19,15 @@ class AuthorRequestController extends Controller
      */
     public function create()
     {
-        return view('author-requests.create');
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $data['user_id'] = Auth::id();
-
-        AuthorRequest::create($data);
-
-        return redirect()->route('author-requests.create')
-            ->with('success', 'Yêu cầu đã được gửi thành công!');
+        //
     }
 
     /**
@@ -70,20 +60,5 @@ class AuthorRequestController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function approve(AuthorRequest $request)
-    {
-        $request->user->assignRole('author');
-        $request->delete();
-
-        return back()->with('success', 'Đã chấp nhận yêu cầu!');
-    }
-
-    public function reject(AuthorRequest $request)
-    {
-        $request->delete();
-
-        return back()->with('success', 'Đã từ chối yêu cầu!');
     }
 }

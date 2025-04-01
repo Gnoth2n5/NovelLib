@@ -1,1 +1,0 @@
-<li><a href="{{ route('novels.index') }}" class="hover:text-primary">Danh Sách Truyện</a></li> 
