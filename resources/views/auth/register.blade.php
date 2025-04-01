@@ -18,14 +18,8 @@
                             <label for="name" class="label">
                                 <span class="label-text">Họ và tên</span>
                             </label>
-                            <input type="text" 
-                                   id="name" 
-                                   name="name" 
-                                   class="input input-bordered w-full" 
-                                   value="{{ old('name') }}" 
-                                   required 
-                                   autofocus 
-                                   autocomplete="name" />
+                            <input type="text" id="name" name="name" class="input input-bordered w-full"
+                                value="{{ old('name') }}" required autofocus autocomplete="name" />
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
@@ -34,13 +28,8 @@
                             <label for="email" class="label">
                                 <span class="label-text">Địa chỉ email</span>
                             </label>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
-                                   class="input input-bordered w-full" 
-                                   value="{{ old('email') }}" 
-                                   required 
-                                   autocomplete="username" />
+                            <input type="email" id="email" name="email" class="input input-bordered w-full"
+                                value="{{ old('email') }}" required autocomplete="username" />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
@@ -49,12 +38,7 @@
                             <label for="password" class="label">
                                 <span class="label-text">Mật khẩu</span>
                             </label>
-                            <input type="password" 
-                                   id="password" 
-                                   name="password" 
-                                   class="input input-bordered w-full" 
-                                   required 
-                                   autocomplete="new-password" />
+                            <x-input-password></x-input-password>
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
 
@@ -63,12 +47,8 @@
                             <label for="password_confirmation" class="label">
                                 <span class="label-text">Xác nhận mật khẩu</span>
                             </label>
-                            <input type="password" 
-                                   id="password_confirmation" 
-                                   name="password_confirmation" 
-                                   class="input input-bordered w-full" 
-                                   required 
-                                   autocomplete="new-password" />
+                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                class="input input-bordered w-full" required />
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                         </div>
 

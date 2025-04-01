@@ -19,11 +19,7 @@
                             <span class="label-text">Email</span>
                         </label>
                         <input type="email" name="email" value="{{ old('email') }}" class="input input-bordered w-full" required autofocus />
-                        @error('email')
-                            <label class="label">
-                                <span class="label-text-alt text-error">{{ $message }}</span>
-                            </label>
-                        @enderror
+                        <x-input-error :messages="$errors->get('email')"></x-input-error>
                     </div>
 
                     <!-- Mật khẩu -->
@@ -31,12 +27,8 @@
                         <label class="label">
                             <span class="label-text">Mật khẩu</span>
                         </label>
-                        <input type="password" name="password" class="input input-bordered w-full" required />
-                        @error('password')
-                            <label class="label">
-                                <span class="label-text-alt text-error">{{ $message }}</span>
-                            </label>
-                        @enderror
+                        <x-input-password></x-input-password>
+                        <x-input-error :messages="$errors->get('password')"></x-input-error>
                     </div>
 
                     <!-- Ghi nhớ đăng nhập -->
@@ -70,4 +62,6 @@
             </div>
         </div>
     </div>
+
+    
 </x-guest-layout>
