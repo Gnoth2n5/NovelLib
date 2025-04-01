@@ -9,9 +9,9 @@
                 <p class="mb-5">Nơi bạn có thể đọc và chia sẻ những câu chuyện thú vị, kết nối với cộng đồng yêu thích
                     truyện chữ.</p>
                 <a href="{{ route('novels.index') }}" class="btn btn-primary">Khám Phá Ngay</a>
-            </div>
-        </div>
-    </div>
+                                        </div>
+                                        </div>
+                                    </div>
 
     <div class="container mx-auto px-4 py-12">
         <!-- Truyện Mới Nhất -->
@@ -19,26 +19,26 @@
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold">Truyện Mới Nhất</h2>
                 <a href="{{ route('novels.index') }}" class="btn btn-ghost btn-sm">Xem tất cả</a>
-            </div>
+                                </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach (\App\Models\Novel::with('user')->latest()->take(4)->get() as $novel)
                     <x-novels.card :novel="$novel"></x-novels.card>
                 @endforeach
-            </div>
-        </div>
+                                </div>
+                                </div>
 
         <!-- Truyện Nổi Bật -->
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold">Truyện Nổi Bật</h2>
                 <a href="{{ route('novels.index', ['sort' => 'views']) }}" class="btn btn-ghost btn-sm">Xem tất cả</a>
-            </div>
+                                </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach (\App\Models\Novel::orderBy('views', 'desc')->take(4)->get() as $novel)
                     <x-novels.card-two :novel="$novel"></x-novels.card-two>
                 @endforeach
-            </div>
-        </div>
+                                </div>
+                                </div>
 
         <!-- Danh Mục -->
         <div>

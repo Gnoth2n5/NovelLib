@@ -33,7 +33,7 @@ class CommentController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = Auth::id();
 
         $comment = Comment::create($data);
 
