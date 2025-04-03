@@ -34,7 +34,7 @@
                     <!-- Ghi nhớ đăng nhập -->
                     <div class="form-control mt-4">
                         <label class="label cursor-pointer justify-start gap-2">
-                            <input type="checkbox" name="remember" class="checkbox checkbox-primary" />
+                            <input type="checkbox" name="remember" class="checkbox checkbox-primary" {{ old('remember') ? 'checked' : '' }} />
                             <span class="label-text">Ghi nhớ đăng nhập</span>
                         </label>
                     </div>
