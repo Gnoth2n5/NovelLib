@@ -39,6 +39,12 @@
                 </div>
                 <div class="flex-none hidden lg:block">
                     <ul class="menu menu-horizontal gap-2">
+
+                        <li>
+                            <x-layouts.dark-mode></x-layouts.dark-mode>
+                        </li>
+
+
                         <!-- Navbar menu content here -->
                         <li><a href="{{ route('novels.index') }}" class="hover:text-primary">Danh Sách Truyện</a></li>
                         <li class="dropdown dropdown-end">
