@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthorRequestController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CommentController;
@@ -12,32 +12,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 // Admin routes
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-
-    // Users routes
-    Route::get('/users', [AdminController::class, 'users'])->name('users.index');
-    Route::post('/users/{user}/toggle-status', [AdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
-
-    // Novels routes
-    Route::get('/novels', [AdminController::class, 'novels'])->name('novels.index');
-    Route::delete('/novels/{novel}', [AdminController::class, 'deleteNovel'])->name('novels.delete');
-
-    // Categories routes
-    Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
-    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('categories.store');
-    Route::put('/categories/{category}', [AdminController::class, 'updateCategory'])->name('categories.update');
-    Route::delete('/categories/{category}', [AdminController::class, 'deleteCategory'])->name('categories.delete');
-
-    // Comments routes
-    Route::get('/comments', [AdminController::class, 'comments'])->name('comments.index');
-    Route::delete('/comments/{comment}', [AdminController::class, 'deleteComment'])->name('comments.delete');
-});
+require __DIR__ . '/admin/index.php';
 
 // Author routes
 Route::middleware(['auth'])->group(function () {

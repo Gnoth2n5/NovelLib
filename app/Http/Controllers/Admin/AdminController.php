@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Models\Novel;
@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
@@ -57,46 +58,6 @@ class AdminController extends Controller
 
         $message = $user->is_active ? 'Tài khoản đã được kích hoạt!' : 'Tài khoản đã bị khóa!';
         return back()->with('success', $message);
-    }
-
-    public function categories()
-    {
-        $categories = Category::withCount('novels')
-            ->latest()
-            ->paginate(20);
-
-        return view('admin.categories.index', compact('categories'));
-    }
-
-    public function storeCategory(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
-            'description' => 'nullable|string'
-        ]);
-
-        Category::create($validated);
-
-        return back()->with('success', 'Thể loại đã được thêm thành công!');
-    }
-
-    public function updateCategory(Request $request, Category $category)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
-            'description' => 'nullable|string'
-        ]);
-
-        $category->update($validated);
-
-        return back()->with('success', 'Thể loại đã được cập nhật thành công!');
-    }
-
-    public function deleteCategory(Category $category)
-    {
-        $category->delete();
-
-        return back()->with('success', 'Thể loại đã được xóa thành công!');
     }
 
     public function novels()
