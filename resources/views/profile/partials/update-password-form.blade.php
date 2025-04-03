@@ -9,9 +9,18 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.password.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('put')
+
+        @if (session('status') === 'password-updated')
+            <div class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ __('Mật khẩu đã được cập nhật thành công.') }}</span>
+            </div>
+        @endif
 
         @if ($errors->any())
             <div class="alert alert-error">
@@ -19,7 +28,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
-                    <h3 class="font-bold">Có lỗi xảy ra!</h3>
+                    <h3 class="font-bold">{{ __('Có lỗi xảy ra!') }}</h3>
                     <div class="text-sm">
                         <ul class="list-disc list-inside">
                             @foreach ($errors->all() as $error)
@@ -36,7 +45,7 @@
                 <span class="label-text">{{ __('Mật khẩu hiện tại') }}</span>
             </label>
             <div class="relative">
-                <input type="password" name="current_password" id="current_password" class="input input-bordered w-full" required autocomplete="current-password" />
+                <input type="password" name="current_password" id="current_password" class="input input-bordered w-full @error('current_password') input-error @enderror" required autocomplete="current-password" />
                 <button type="button" class="btn btn-ghost btn-sm absolute right-0 top-0 h-full rounded-l-none" onclick="togglePassword('current_password')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="current_password-eye">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -59,7 +68,7 @@
                 <span class="label-text">{{ __('Mật khẩu mới') }}</span>
             </label>
             <div class="relative">
-                <input type="password" name="password" id="password" class="input input-bordered w-full" required autocomplete="new-password" />
+                <input type="password" name="password" id="password" class="input input-bordered w-full @error('password') input-error @enderror" required autocomplete="new-password" />
                 <button type="button" class="btn btn-ghost btn-sm absolute right-0 top-0 h-full rounded-l-none" onclick="togglePassword('password')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="password-eye">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -82,7 +91,7 @@
                 <span class="label-text">{{ __('Xác nhận mật khẩu') }}</span>
             </label>
             <div class="relative">
-                <input type="password" name="password_confirmation" id="password_confirmation" class="input input-bordered w-full" required autocomplete="new-password" />
+                <input type="password" name="password_confirmation" id="password_confirmation" class="input input-bordered w-full @error('password_confirmation') input-error @enderror" required autocomplete="new-password" />
                 <button type="button" class="btn btn-ghost btn-sm absolute right-0 top-0 h-full rounded-l-none" onclick="togglePassword('password_confirmation')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" id="password_confirmation-eye">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -102,10 +111,6 @@
 
         <div class="flex items-center gap-4">
             <button type="submit" class="btn btn-primary">{{ __('Lưu') }}</button>
-
-            @if (session('status') === 'password-updated')
-                <p class="text-sm text-success">{{ __('Đã lưu.') }}</p>
-            @endif
         </div>
     </form>
 </section>

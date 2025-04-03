@@ -36,19 +36,26 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('success', 'profile-updated');
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
      * Update the user's password.
      */
-    public function updatePassword(PasswordUpdateRequest $request): RedirectResponse
+    public function updatePassword(PasswordUpdateRequest $request)
     {
-        $request->user()->update([
-            'password' => $request->validated('password'),
-        ]);
+        try {
+            $validated = $request->validated();
+            
+            $request->user()->update([
+                'password' => bcrypt($validated['password']),
+            ]);
 
-        return Redirect::route('profile.edit')->with('success', 'password-updated');
+            return Redirect::route('profile.edit')->with('status', 'password-updated');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Có lỗi xảy ra khi cập nhật mật khẩu.']);
+        }
+
     }
 
     /**
@@ -57,13 +64,18 @@ class ProfileController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         $request->validate([
-            'password' => ['required', 'current_password'],
+            'destroy_user_password' => ['required', 'current_password'],
         ]);
 
         $user = $request->user();
         Auth::logout();
 
         $user->delete();
+
+        // Xóa ảnh đại diện nếu có
+        if ($user->profile_photo) {
+            Storage::disk('public')->delete($user->profile_photo);
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -94,6 +106,6 @@ class ProfileController extends Controller
             $user->save();
         }
 
-        return back()->with('success', 'photo-updated');
+        return \redirect()->back()->with('status', 'photo-updated');
     }
 }
