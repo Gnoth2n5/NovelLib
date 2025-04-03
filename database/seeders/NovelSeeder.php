@@ -22,26 +22,23 @@ class NovelSeeder extends Seeder
             [
                 'title' => 'Tu Tiên Giả',
                 'description' => 'Một câu chuyện về con đường tu tiên của một thiếu niên bình thường...',
-                'is_completed' => false,
-                'is_published' => true,
                 'views' => 1000,
-                'follows' => 100
+                'follows' => 100,
+                'status' => 'ongoing'
             ],
             [
                 'title' => 'Kiếm Thánh',
                 'description' => 'Hành trình trở thành kiếm thánh của một thiếu niên có tài năng kiếm thuật...',
-                'is_completed' => false,
-                'is_published' => true,
                 'views' => 800,
-                'follows' => 80
+                'follows' => 80,
+                'status' => 'completed'
             ],
             [
                 'title' => 'Tình Yêu Vĩnh Cửu',
                 'description' => 'Câu chuyện tình yêu lãng mạn giữa hai người trẻ...',
-                'is_completed' => true,
-                'is_published' => true,
                 'views' => 2000,
-                'follows' => 200
+                'follows' => 200,
+                'status' => 'hiatus'
             ]
         ];
 
@@ -51,10 +48,9 @@ class NovelSeeder extends Seeder
                 'title' => $novel['title'],
                 'slug' => Str::slug($novel['title']),
                 'description' => $novel['description'],
-                'is_completed' => $novel['is_completed'],
-                'is_published' => $novel['is_published'],
                 'views' => $novel['views'],
-                'follows' => $novel['follows']
+                'follows' => $novel['follows'],
+                'status' => $novel['status'],
             ]);
 
             // Gán ngẫu nhiên 2-3 danh mục cho mỗi truyện

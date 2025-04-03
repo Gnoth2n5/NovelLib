@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\NovelStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,8 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description');
             $table->string('cover_image')->nullable();
-            $table->boolean('is_completed')->default(false);
-            $table->boolean('is_published')->default(false);
+            $table->enum('status', NovelStatus::getValues())->default(NovelStatus::PENDING->value);
             $table->integer('views')->default(0);
             $table->integer('follows')->default(0);
             $table->timestamps();

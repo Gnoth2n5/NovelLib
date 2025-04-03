@@ -40,7 +40,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('author.dashboard'));
         }
 
-        return redirect()->intended(route('novels.index'));
+        return redirect()->intended(route('novels.index'))->with('success', 'Đăng nhập thành công');
     }
 
     /**

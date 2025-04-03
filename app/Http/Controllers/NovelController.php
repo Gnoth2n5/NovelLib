@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\NovelStatus;
 use App\Models\Novel;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -18,9 +19,11 @@ class NovelController extends Controller
     public function index()
     {
         $novels = Novel::with(['user', 'categories'])
-            ->where('is_published', true)
+            ->where('status', '!=', NovelStatus::CANCELLED->value)
             ->latest()
             ->paginate(12);
+
+          
 
         return view('novels.index', compact('novels'));
     }

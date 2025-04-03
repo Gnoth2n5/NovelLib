@@ -19,15 +19,12 @@ class Novel extends Model
         'slug',
         'description',
         'cover_image',
-        'is_completed',
-        'is_published',
         'views',
-        'follows'
+        'follows',
+        'status'
     ];
 
     protected $casts = [
-        'is_completed' => 'boolean',
-        'is_published' => 'boolean',
         'views' => 'integer',
         'follows' => 'integer'
     ];

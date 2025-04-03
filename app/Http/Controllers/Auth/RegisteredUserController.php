@@ -52,6 +52,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->back()->with('success', 'Đăng ký tài khoản thành công!');
+        return redirect()->route('home')->with('success', 'Đăng ký tài khoản thành công!');
     }
 }
