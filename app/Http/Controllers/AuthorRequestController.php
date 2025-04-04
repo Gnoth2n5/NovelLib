@@ -88,7 +88,7 @@ class AuthorRequestController extends Controller
 
         $authorRequest->user->assignRole('author');
 
-        return redirect()->route('author-requests.index')
+        return redirect()->route('admin.author-requests.index')
             ->with('success', 'Đã phê duyệt yêu cầu tác giả thành công!');
     }
 
@@ -99,7 +99,7 @@ class AuthorRequestController extends Controller
             'admin_note' => request('admin_note')
         ]);
 
-        return redirect()->route('author-requests.index')
+        return redirect()->route('admin.author-requests.index')
             ->with('success', 'Đã từ chối yêu cầu tác giả!');
     }
 }

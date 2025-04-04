@@ -30,7 +30,7 @@ class ChapterPolicy
      */
     public function create(User $user, Novel $novel): bool
     {
-        return $user->id === $novel->user_id || $user->hasRole('admin');
+        return $user->id === $novel->user_id;
     }
 
     /**
@@ -38,7 +38,7 @@ class ChapterPolicy
      */
     public function update(User $user, Chapter $chapter): bool
     {
-        return $user->id === $chapter->novel->user_id || $user->hasRole('admin');
+        return $user->id === $chapter->novel->user_id;
     }
 
     /**
@@ -46,7 +46,7 @@ class ChapterPolicy
      */
     public function delete(User $user, Chapter $chapter): bool
     {
-        return $user->id === $chapter->novel->user_id || $user->hasRole('admin');
+        return $user->id === $chapter->novel->user_id;
     }
 
     /**

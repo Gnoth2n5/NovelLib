@@ -16,6 +16,9 @@ class NovelObserver
     // This method is called before a novel is updated
     public function updating(Novel $novel)
     {
-        $novel->slug = \Illuminate\Support\Str::slug($novel->name);
+        // if name is changed, update slug
+        if ($novel->isDirty('name')) {
+            $novel->slug = \Illuminate\Support\Str::slug($novel->name);
+        }
     }
 }

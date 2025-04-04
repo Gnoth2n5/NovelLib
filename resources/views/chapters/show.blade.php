@@ -72,7 +72,7 @@
             <div class="card-body">
                 <h1 class="card-title text-2xl mb-4">Chương {{ $currentChapter }}: {{ $chapter->title }}</h1>
                 <div class="prose max-w-none">
-                    {!! nl2br(e($chapter->content)) !!}
+                    {!! $chapter->content !!}
                 </div>
             </div>
         </div>

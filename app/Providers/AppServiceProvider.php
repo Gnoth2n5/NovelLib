@@ -23,5 +23,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Category::observe(\App\Observers\CategoryObserver::class);
         Novel::observe(\App\Observers\NovelObserver::class);
+        \App\Models\Chapter::observe(\App\Observers\ChapterObserver::class);
     }
 }

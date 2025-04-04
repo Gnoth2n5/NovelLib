@@ -16,6 +16,9 @@ class CategoryObserver
     // This method is called before a category is updated
     public function updating(Category $category)
     {
-        $category->slug = Str::slug($category->name);
+        // if name is changed, update slug
+        if ($category->isDirty('name')) {
+            $category->slug = Str::slug($category->name);
+        }
     }
 }

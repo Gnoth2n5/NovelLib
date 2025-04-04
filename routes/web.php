@@ -15,12 +15,9 @@ Route::get('/', function () {
 // Admin routes
 require __DIR__ . '/admin/index.php';
 
+
 // Author routes
-Route::middleware(['auth'])->group(function () {
-    Route::resource('novels', NovelController::class);
-    Route::resource('chapters', ChapterController::class)->except(['index', 'show']);
-    Route::get('/my-novels', [NovelController::class, 'myNovels'])->name('novels.my');
-});
+require __DIR__ . '/author/index.php';
 
 // Public routes
 Route::get('/novels', [NovelController::class, 'index'])->name('novels.index');
