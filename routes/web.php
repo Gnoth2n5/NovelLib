@@ -39,9 +39,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Author request routes
-Route::resource('author-requests', AuthorRequestController::class);
-Route::post('/author-requests/{authorRequest}/approve', [AuthorRequestController::class, 'approve'])->name('author-requests.approve');
-Route::post('/author-requests/{authorRequest}/reject', [AuthorRequestController::class, 'reject'])->name('author-requests.reject');
+Route::middleware(['auth'])->group(function () {
+    // Route cho người dùng
+    Route::get('/author-requests/create', [AuthorRequestController::class, 'create'])->name('author-requests.create');
+    Route::post('/author-requests', [AuthorRequestController::class, 'store'])->name('author-requests.store');
+
+});
 
 // Profile routes
 Route::middleware(['auth'])->group(function () {
