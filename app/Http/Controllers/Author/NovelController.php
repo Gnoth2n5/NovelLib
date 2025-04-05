@@ -96,4 +96,6 @@ class NovelController extends Controller
         return redirect()->route('author.dashboard')
             ->with('success', 'Truyện đã được xóa thành công!');
     }
+
+    
 }

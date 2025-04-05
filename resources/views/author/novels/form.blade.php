@@ -115,6 +115,17 @@
         </div>
     </div>
 
+    @push('styles')
+        <style>
+            .ck-editor__editable_inline {
+                min-height: 300px;
+            }
+            .ck-content {
+                height: 100%;
+            }
+        </style>
+    @endpush
+
     @push('scripts')
         <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
         <script>
