@@ -30,7 +30,7 @@
                             <span class="label-text">Mô tả</span>
                         </label>
                         <textarea name="description" id="description"
-                            class="textarea textarea-bordered h-60 @error('description') textarea-error @enderror">
+                            class="textarea textarea-bordered h-60 w-full @error('description') textarea-error @enderror">
                             {{ old('description', $novel->description ?? '') }}
                         </textarea>
                         @error('description')
@@ -115,7 +115,7 @@
         </div>
     </div>
 
-    @push('styles')
+    {{-- @push('styles')
         <style>
             .ck-editor__editable_inline {
                 min-height: 300px;
@@ -156,5 +156,5 @@
                     });
             });
         </script>
-    @endpush
+    @endpush --}}
 </x-guest-layout>

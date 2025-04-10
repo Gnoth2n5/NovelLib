@@ -22,7 +22,7 @@
             {{ number_format($novel->views) }}
         </div>
         <div class="flex gap-2 flex-wrap mt-2">
-            @foreach ($novel->categories as $category)
+            @foreach ($novel->categories->take(3) as $category)
                 <x-categories.badge :category="$category" />
             @endforeach
         </div>

@@ -42,10 +42,7 @@
                         <!-- Thể loại -->
                         <div class="flex flex-wrap gap-2 mb-4">
                             @foreach ($novel->categories as $category)
-                                <a href="{{ route('novels.index', ['category' => $category->slug]) }}"
-                                    class="badge badge-outline badge-sm hover:badge-primary">
-                                    {{ $category->name }}
-                                </a>
+                                <x-categories.badge :category="$category"></x-categories.badge>
                             @endforeach
                         </div>
 

@@ -11,9 +11,9 @@
     </figure>
     <div class="card-body">
         <h2 class="card-title">{{ Str::limit($novel->title, 50) }}</h2>
-        <p class="text-sm text-base-content/70">Tác giả: {{ $novel->user->name }}</p>
+        <p class="text-sm text-base-content/70">Người đăng: {{ $novel->user->name }}</p>
         <div class="flex gap-2 flex-wrap mt-2">
-            @foreach($novel->categories as $category)
+            @foreach($novel->categories->take(3) as $category)
                 <x-categories.badge :category="$category" />
             @endforeach
         </div>
